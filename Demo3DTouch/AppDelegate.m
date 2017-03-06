@@ -7,17 +7,56 @@
 //
 
 #import "AppDelegate.h"
+#import "PeekViewController.h"
+#import "DemoViewController.h"
 
+static NSString * const peekType = @"peekType";
+static NSString * const demoType = @"demoType";
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
 
+- (void)setup3DTouch {
+    
+    //创建自定义图片的图标
+    UIApplicationShortcutIcon *iconType1 = [UIApplicationShortcutIcon iconWithTemplateImageName:@"all"];
+    // 使用系统自带的图标创建icons
+    UIApplicationShortcutIcon *iconType2 = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypePlay];
+    
+    
+    UIMutableApplicationShortcutItem *item1 = [[UIMutableApplicationShortcutItem alloc] initWithType:peekType localizedTitle:@"进入Peek" localizedSubtitle:@"自定义图标" icon:iconType1 userInfo:nil];
+    
+    UIMutableApplicationShortcutItem *item2 = [[UIMutableApplicationShortcutItem alloc] initWithType:demoType localizedTitle:@"进入demo页面" localizedSubtitle:@"系统play样式图标" icon:iconType2 userInfo:nil];
+    
+    NSArray *items = @[item1, item2];
+    [UIApplication sharedApplication].shortcutItems = items;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    
+    [self setup3DTouch];
+    
     return YES;
+}
+#pragma mark -  通过快捷选项进入app的时候会调用该方法
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler
+{
+    //1.获得shortcutItem的type type就是初始化shortcutItem的时候传入的唯一标识符
+    NSString *type = shortcutItem.type;
+    //2.可以通过type来判断点击的是哪一个快捷按钮 并进行每个按钮相应的点击事件
+    if ([type isEqualToString:peekType]) {
+        PeekViewController *peekVc = [[PeekViewController alloc] init];
+        [(UINavigationController *)self.window.rootViewController pushViewController:peekVc animated:YES];
+    }
+    else if ([type isEqualToString:demoType]){
+        DemoViewController *demoVc = [[DemoViewController alloc] init];
+        [(UINavigationController *)self.window.rootViewController pushViewController:demoVc animated:YES];
+        
+    }
 }
 
 
